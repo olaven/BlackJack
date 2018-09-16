@@ -31,7 +31,7 @@ namespace BlackJack
                 dealer.DealCardTo(player);
                 _client.DisplayStatus();
 
-                if (player.Sum <= 21 && _client.PlayerWantsToHit())
+                if (player.Sum < 21 && _client.PlayerWantsToHit())
                     continue;
                 break; 
             }
@@ -41,20 +41,34 @@ namespace BlackJack
 
         protected override void End() 
         {
+            bool playerBlackJack = false;
+            bool dealerBlackJack = false; 
+
+            if (player.Sum == 21)
+            {
+                playerBlackJack = true; 
+            }
+
             while(dealer.Sum < 17) 
             {
-                dealer.DealCardTo(dealer); 
+
+                dealer.DealCardTo(dealer);
+                if (dealer.Sum == 21)
+                {
+                    dealerBlackJack = true;
+                    break; 
+                }
             }
 
             _client.DisplayStatus(); 
 
-            if(dealer.Sum >= player.Sum) 
+            if((playerBlackJack && !dealerBlackJack) || dealer.Sum < player.Sum) 
             {
-                _client.DisplayMessage("Dealer won"); 
+                _client.DisplayMessage(player.Name + " won."); 
             } 
             else 
             {
-                _client.DisplayMessage(player.Name + " won!"); 
+                _client.DisplayMessage("Dealer won."); 
             }
         }
     }
